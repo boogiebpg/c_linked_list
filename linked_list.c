@@ -4,7 +4,7 @@
 /* check if specified list is empty */
 int is_empty_list(struct list_t* list)
 {
-    if (list->data == 0 && list->next == 0)
+    if (list->data == NULL && list->next == 0)
     {
         return 1;
     }
@@ -21,9 +21,21 @@ struct list_t* list_init()
 
     root = malloc( sizeof(struct list_t) );
     root->next = 0;
-    root->data = 0;
+    root->data = NULL;
 
     return root;
+}
+
+void list_destroy(struct list_t* list)
+{
+    struct list_t *item_to_destroy;
+    while (list->next != 0)
+    {
+        item_to_destroy = list;
+        list = list->next;
+        free(item_to_destroy);
+    }
+    free(list);
 }
 
 /* insert an item in the front of the linked list */
@@ -167,10 +179,10 @@ struct list_t* list_remove_any(struct list_t* list, void *element)
             walker = walker->next;
             if ( walker->data == element ) {
                 next_item = walker->next;
-                free(walker);
                 prev_item->next = next_item;
+                
+                free(walker);
             }
-            
         }
         
     }

@@ -12,6 +12,7 @@ struct list_t {
 
 int is_empty_list(struct list_t* list);
 struct list_t* list_init();
+void list_destroy(struct list_t* list);
 struct list_t* list_insert_front(struct list_t* list, void *element);
 struct list_t* list_insert_after(struct list_t* list, void *element, int pos);
 void list_insert_rear(struct list_t* list, void *element);
