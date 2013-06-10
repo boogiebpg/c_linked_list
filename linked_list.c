@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 struct list_t {
   int data;
@@ -14,10 +15,13 @@ void list_insert_rear(struct list_t* list, int element);
 struct list_t* list_remove_front(struct list_t* list);
 struct list_t* list_remove_any(struct list_t* list, int element);
 struct list_t* list_remove_rear(struct list_t* list);
+size_t list_size(struct list_t* list);
+int search(struct list_t* list, int element);
 
 int main()
 {
     struct list_t *root;
+    size_t s;
     
     root = list_init();
     list_insert_rear(root, 43);
@@ -42,6 +46,8 @@ int main()
     list_insert_rear(root, 73);
     root = list_remove_any(root,73);
     list_insert_rear(root, 75);
+    
+    /*
     root = list_remove_rear(root);
     root = list_remove_rear(root);
     root = list_remove_rear(root);
@@ -49,7 +55,11 @@ int main()
     root = list_remove_rear(root);
     root = list_remove_rear(root);
     root = list_remove_rear(root);
-    list_insert_rear(root, 77);
+    */
+    //list_insert_rear(root, 77);
+
+    s = list_size(root);
+    printf( "%d\n", search(root, 57) );
 
     return 0;
 }
@@ -87,6 +97,7 @@ struct list_t* list_insert_front(struct list_t* list, int element)
     if ( is_empty_list(list) )
     {
         list->data = element;
+        return list;
     }
     else
     {
@@ -140,39 +151,25 @@ void list_insert_rear(struct list_t* list, int element)
     if ( is_empty_list(list) )
     {
         list->data = element;
-        printf( "[%d]\n",list->data);
     }
     else
     {
         walker = list;
-
-        // DEBUG_INFO: print root elem
-        printf( "[%d] ",walker->data);
-
         while ( walker->next != 0)
         {
-            
             walker = walker->next;
-            // DEBUG_INFO: print every next elem
-            printf( "%d ",walker->data);
         }
-
-        /* Creates a list_t at the end of the list */
         walker->next = malloc( sizeof(struct list_t) );
-
         walker = walker->next; 
 
         if ( walker == 0 )
         {
             printf( "Out of memory" );
-            //return 0;
+            exit;
         }
 
         walker->next = 0;
         walker->data = element;
-
-        // DEBUG_INFO: print inserted elem - the last one in list
-        printf( "(%d)\n", walker->data );
     }
 }
 
@@ -276,4 +273,58 @@ struct list_t* list_remove_rear(struct list_t* list)
         return list;
     }
 
+}
+
+size_t list_size(struct list_t* list)
+{
+    struct list_t *walker;
+    size_t i = 0;
+
+    if ( !is_empty_list(list) )
+    {
+        i = 1;
+        walker = list;
+
+        // DEBUG_INFO: print root elem
+        printf( "%d ",walker->data);
+
+        while ( walker->next != 0)
+        {
+            ++i;
+            walker = walker->next;
+            // DEBUG_INFO: print every next elem
+            printf( "%d ",walker->data);
+        }
+    }
+    // DEBUG_INFO
+    printf("; Size: %d.\n", (int)i );
+    return i;
+}
+
+int search(struct list_t* list, int element)
+{
+    struct list_t *walker;
+    size_t i = 0;
+    int find = 0;
+
+    if ( !is_empty_list(list) )
+    {
+        i = 1;
+        walker = list;
+        while ( walker->next != 0 )
+        {
+            if ( walker->data == element )
+            {
+                find = 1;
+                break;
+            }
+            ++i;
+            walker = walker->next;
+        }
+    }
+    if ( !find )
+    {
+        i = 0;
+    }
+    return i;
 }
