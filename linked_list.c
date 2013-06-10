@@ -1,70 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
 
-struct list_t {
-  int data;
-  struct list_t *next;
-};
+#include "linked_list.h"
 
-int is_empty_list(struct list_t* list);
-struct list_t* list_init();
-struct list_t* list_insert_front(struct list_t* list, int element);
-struct list_t* list_insert_after(struct list_t* list, int element, int pos);
-void list_insert_rear(struct list_t* list, int element);
-struct list_t* list_remove_front(struct list_t* list);
-struct list_t* list_remove_any(struct list_t* list, int element);
-struct list_t* list_remove_rear(struct list_t* list);
-size_t list_size(struct list_t* list);
-int search(struct list_t* list, int element);
-
-int main()
-{
-    struct list_t *root;
-    size_t s;
-    
-    root = list_init();
-    list_insert_rear(root, 43);
-    list_insert_rear(root, 63);
-    root = list_insert_after(root,99,3);
-    list_insert_rear(root, 70);
-    
-    root = list_insert_front(root, 25);
-    root = list_insert_front(root, 17);
-    
-    list_insert_rear(root, 57);
-    root = list_remove_front(root);
-    
-    list_insert_rear(root, 69);
-    
-    root = list_insert_after(root,111,5);
-    root = list_insert_after(root,120,120);
-    
-    root = list_remove_any(root,70);
-
-    root = list_remove_front(root);
-    list_insert_rear(root, 73);
-    root = list_remove_any(root,73);
-    list_insert_rear(root, 75);
-    
-    /*
-    root = list_remove_rear(root);
-    root = list_remove_rear(root);
-    root = list_remove_rear(root);
-    root = list_remove_rear(root);
-    root = list_remove_rear(root);
-    root = list_remove_rear(root);
-    root = list_remove_rear(root);
-    */
-    //list_insert_rear(root, 77);
-
-    s = list_size(root);
-    printf( "%d\n", search(root, 57) );
-
-    return 0;
-}
-
-// check if specified list is empty
+/* check if specified list is empty */
 int is_empty_list(struct list_t* list)
 {
     if (list->data == 0 && list->next == 0)
@@ -77,7 +14,7 @@ int is_empty_list(struct list_t* list)
     }
 }
 
-// initialize linked list
+/* initialize linked list */
 struct list_t* list_init()
 {
     struct list_t *root;
@@ -89,8 +26,8 @@ struct list_t* list_init()
     return root;
 }
 
-// insert an item in the front of the linked list
-struct list_t* list_insert_front(struct list_t* list, int element)
+/* insert an item in the front of the linked list */
+struct list_t* list_insert_front(struct list_t* list, void *element)
 {
     struct list_t *first_elem;
 
@@ -109,8 +46,8 @@ struct list_t* list_insert_front(struct list_t* list, int element)
     return first_elem;
 }
 
-// insert an item on specified position or to the end if position>lenght(list)
-struct list_t* list_insert_after(struct list_t* list, int element, int pos)
+/* insert an item on specified position or to the end if position>lenght(list) */
+struct list_t* list_insert_after(struct list_t* list, void *element, int pos)
 {
     struct list_t *walker, *next_element, *new_element;
     int i = 1;
@@ -127,7 +64,7 @@ struct list_t* list_insert_after(struct list_t* list, int element, int pos)
         {
             walker = walker->next;
         }
-        // can insert record instead of the last element or after it
+        /* can insert record instead of the last element or after it */
         if ( i == pos || i == (pos - 1) )
         {
             new_element = malloc( sizeof(struct list_t) );
@@ -143,14 +80,14 @@ struct list_t* list_insert_after(struct list_t* list, int element, int pos)
     return list;
 }
 
-// insert an item to the end of the linked list
-void list_insert_rear(struct list_t* list, int element)
+/* insert an item to the end of the linked list */
+void list_insert_rear(struct list_t* list, void *element)
 {
     struct list_t *walker;
 
     if ( is_empty_list(list) )
     {
-        list->data = element;
+        list->data = (char*)element;
     }
     else
     {
@@ -165,7 +102,7 @@ void list_insert_rear(struct list_t* list, int element)
         if ( walker == 0 )
         {
             printf( "Out of memory" );
-            exit;
+            exit(0);
         }
 
         walker->next = 0;
@@ -177,19 +114,19 @@ struct list_t* list_remove_front(struct list_t* list)
 {
     struct list_t *new_root;
 
-    // nothing to do
+    /* nothing to do */
     if ( is_empty_list(list) )
     {
         return list;
     }
-    // we have only one element, deleting it
+    /* we have only one element, deleting it */
     else if ( list->next == 0 )
     {
         list->data = 0;
         list->next = 0;
         return list;
     }
-    // we have at least 2 elements
+    /* we have at least 2 elements */
     else
     {
         new_root = list->next;
@@ -198,8 +135,8 @@ struct list_t* list_remove_front(struct list_t* list)
     }
 }
 
-// delete all nodes where data == element
-struct list_t* list_remove_any(struct list_t* list, int element)
+/* delete all nodes where data == element */
+struct list_t* list_remove_any(struct list_t* list, void *element)
 {
     struct list_t *walker, *prev_item, *next_item;
     int need_to_del_first = 1;
@@ -243,12 +180,12 @@ struct list_t* list_remove_any(struct list_t* list, int element)
 
 struct list_t* list_remove_rear(struct list_t* list)
 {
-    // an empty list
+    /* an empty list */
     if ( is_empty_list(list) )
     {
         return list;
     }
-    // one element in list
+    /* one element in list */
     else if ( list->next == 0 )
     {
         list->data = 0;
@@ -285,23 +222,28 @@ size_t list_size(struct list_t* list)
         i = 1;
         walker = list;
 
-        // DEBUG_INFO: print root elem
-        printf( "%d ",walker->data);
+        /* DEBUG_INFO: print root elem */
+        printf( "%d ",*((int*)walker->data));
+        /*
+        char word[100];
+        sprintf(word,"%d", *((int*)walker->data));
+        printf("%s ", word);
+        */
 
-        while ( walker->next != 0)
+        while (walker->next != 0)
         {
             ++i;
             walker = walker->next;
-            // DEBUG_INFO: print every next elem
-            printf( "%d ",walker->data);
+            /* DEBUG_INFO: print every next elem */
+            printf( "%d ",*((int*)walker->data));
         }
     }
-    // DEBUG_INFO
+    /* DEBUG_INFO */
     printf("; Size: %d.\n", (int)i );
     return i;
 }
 
-int search(struct list_t* list, int element)
+int search(struct list_t* list, void *element)
 {
     struct list_t *walker;
     size_t i = 0;
