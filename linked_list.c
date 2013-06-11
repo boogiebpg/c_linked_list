@@ -180,6 +180,7 @@ struct list_t* list_remove_any(struct list_t* list, void *element)
                 prev_item->next = next_item;
                 
                 free(walker);
+                walker = prev_item;
             }
         }
         
