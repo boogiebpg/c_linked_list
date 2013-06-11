@@ -79,13 +79,11 @@ struct list_t* list_insert_after(struct list_t* list, void *element, int pos)
         /* can insert record instead of the last element or after it */
         if ( i == pos || i == (pos - 1) )
         {
-            new_element = malloc( sizeof(struct list_t) );
-
             next_element = walker->next;
-
-            walker->next = new_element;
+            new_element = malloc( sizeof(struct list_t) );
             new_element->next = next_element;
             new_element->data = element;
+            walker->next = new_element;
         }
     }
 
@@ -99,7 +97,7 @@ void list_insert_rear(struct list_t* list, void *element)
 
     if ( is_empty_list(list) )
     {
-        list->data = (char*)element;
+        list->data = element;
     }
     else
     {
@@ -236,11 +234,6 @@ size_t list_size(struct list_t* list)
 
         /* DEBUG_INFO: print root elem */
         printf( "%d ",*((int*)walker->data));
-        /*
-        char word[100];
-        sprintf(word,"%d", *((int*)walker->data));
-        printf("%s ", word);
-        */
 
         while (walker->next != 0)
         {
